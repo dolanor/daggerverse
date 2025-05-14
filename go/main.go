@@ -31,7 +31,7 @@ func goImageName(version string) string {
 	return fmt.Sprintf("golang:%s", version)
 }
 
-func (g *Go) GoImage(version string) *dagger.Container {
+func (g *Go) Container(version string) *dagger.Container {
 	goCache := dag.CacheVolume("gobuildcache")
 	goModCache := dag.CacheVolume("gomodcache")
 
