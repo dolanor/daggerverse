@@ -30,7 +30,6 @@ func (f *Fyne) WithFyne(ctr *dagger.Container) *dagger.Container {
 
 func (f *Fyne) BuildAPK(
 	// source is the root of source we're using to build the app.
-	// +defaultPath="/"
 	source *dagger.Directory,
 
 	// App ID is the identifier that is use for an app. In general, it is based on
