@@ -27,3 +27,46 @@ func (f *Fyne) WithFyne(ctr *dagger.Container) *dagger.Container {
 		WithWorkdir("/src/fyne").
 		WithExec([]string{"go", "install", "./cmd/fyne"})
 }
+
+func (f *Fyne) BuildAPK(
+	// source is the root of source we're using to build the app.
+	// +defaultPath="/"
+	source *dagger.Directory,
+
+	// App ID is the identifier that is use for an app. In general, it is based on
+	// reverse name notation (eg. com.fynelabs.nomad).
+	appID string,
+
+	// Target Platform represents which os/arch we are building for.
+	// (eg. android/arm64, android/arm)
+	targetPlatform string,
+
+	// app main dir is where fyne will look for the base of the app to build into an
+	// APK, relative to the source directory.
+	appMainDir string,
+
+	// APK Path represents the path where fyne has built it.
+	// normally, it should be in the source dir, but the name of the apk could vary.
+	// We need to set this so we know where we need to look to be able to export the file.
+	apkPath string,
+) *dagger.File {
+	apk := dag.Go().Container("1.24.3").
+		With(dag.Android().WithAndroid).
+		With(f.WithFyne).
+		WithDirectory("/src", source).
+		WithWorkdir("/src").
+		//Terminal().
+		WithExec([]string{
+			"fyne",
+			"package",
+			"--appID",
+			appID,
+			"--target",
+			targetPlatform,
+			"--sourceDir",
+			appMainDir,
+		}).
+		File(apkPath)
+
+	return apk
+}

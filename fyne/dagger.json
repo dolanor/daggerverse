@@ -3,5 +3,15 @@
   "engineVersion": "v0.18.7",
   "sdk": {
     "source": "go"
-  }
+  },
+  "dependencies": [
+    {
+      "name": "android",
+      "source": "../android"
+    },
+    {
+      "name": "go",
+      "source": "../go"
+    }
+  ]
 }
