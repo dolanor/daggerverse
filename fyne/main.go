@@ -48,6 +48,8 @@ func (f *Fyne) BuildAPK(
 	// normally, it should be in the source dir, but the name of the apk could vary.
 	// We need to set this so we know where we need to look to be able to export the file.
 	apkPath string,
+
+	tags string,
 ) *dagger.File {
 	apk := dag.Go().Container("1.24.3").
 		With(dag.Android().WithAndroid).
@@ -58,6 +60,8 @@ func (f *Fyne) BuildAPK(
 		WithExec([]string{
 			"fyne",
 			"package",
+			"--tags",
+			tags,
 			"--appID",
 			appID,
 			"--target",
