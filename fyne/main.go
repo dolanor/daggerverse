@@ -28,7 +28,7 @@ func (f *Fyne) WithFyne(ctr *dagger.Container) *dagger.Container {
 		// TODO: use the new tools repository for v2.6+
 		WithExec([]string{"git", "clone", "https://github.com/dolanor/fyne", "/src/fyne"}).
 		WithWorkdir("/src/fyne").
-		WithEnvironment("CACHE_BUSTER", time.Now()).
+		WithEnvVariable("CACHEBUSTER", time.Now().String()).
 		WithExec([]string{"git", "checkout", "location"}).
 		WithExec([]string{"go", "install", "./cmd/fyne"})
 }
