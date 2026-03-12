@@ -35,9 +35,16 @@ func (f *Fyne) BuildAPK(
 	// source is the root of source we're using to build the app.
 	source *dagger.Directory,
 
-	// App ID is the identifier that is use for an app. In general, it is based on
+	// AppID is the identifier that is use for an app. In general, it is based on
 	// reverse name notation (eg. com.fynelabs.nomad).
 	appID string,
+
+	// AppVersion is the version of the app you want to build an apk for.
+	// it is in the format X, X.Y or X.Y.Z
+	appVersion string,
+
+	// appBuild is the build number of the project. It should alway be incrementing.
+	appBuild string,
 
 	// Target Platform represents which os/arch we are building for.
 	// (eg. android/arm64, android/arm)
@@ -67,6 +74,10 @@ func (f *Fyne) BuildAPK(
 			tags,
 			"--appID",
 			appID,
+			"--appVersion",
+			appVersion,
+			"--appBuild",
+			appBuild,
 			"--target",
 			targetPlatform,
 			"--sourceDir",
