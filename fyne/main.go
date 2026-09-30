@@ -33,6 +33,14 @@ func (f *Fyne) WithFyne(ctr *dagger.Container) *dagger.Container {
 		WithExec([]string{"go", "install", "./cmd/fyne"})
 }
 
+func withGo12514(ctr *dagger.Container) *dagger.Container {
+	return ctr.
+		WithExec([]string{"go", "install", "golang.org/dl/go1.25.14@latest"}).
+		WithExec([]string{"go1.25.14", "download"}).
+		WithExec([]string{"rm", "/go/bin/go"}).
+		WithExec([]string{"ln", "-s", "/go/bin/go1.25.14", "/go/bin/go"})
+}
+
 func (f *Fyne) BuildAPK(
 	// source is the root of source we're using to build the app.
 	source *dagger.Directory,
@@ -66,7 +74,7 @@ func (f *Fyne) BuildAPK(
 	apk := dag.Go().Container("1.24.6").
 		With(dag.Android().WithAndroid).
 		With(f.WithFyne).
-		With(dag.Go().Container("1.25.6")).
+		With(withGo12514).
 		WithDirectory("/src", source).
 		WithWorkdir("/src").
 		//Terminal().
