@@ -37,7 +37,6 @@ func withGo12514(ctr *dagger.Container) *dagger.Container {
 	return ctr.
 		WithExec([]string{"go", "install", "golang.org/dl/go1.25.14@latest"}).
 		WithExec([]string{"go1.25.14", "download"}).
-		WithExec([]string{"rm", "/go/bin/go"}).
 		WithExec([]string{"ln", "-s", "/go/bin/go1.25.14", "/go/bin/go"})
 }
 
