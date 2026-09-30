@@ -1,44 +1,84 @@
-// A generated module for Go functions
-//
-// This module has been generated via dagger init and serves as a reference to
-// basic module structure as you get started with Dagger.
-//
-// Two functions have been pre-created. You can modify, delete, or add to them,
-// as needed. They demonstrate usage of arguments and return types using simple
-// echo and grep commands. The functions can be called from the dagger CLI or
-// from one of the SDKs.
-//
-// The first line in this comment block is a short description line and the
-// rest is a long description with more detail on the module's purpose or usage,
-// if appropriate. All modules should have a short description.
-
+// Package go allows to build and test Go source code.
 package main
 
 import (
+	"context"
 	"dagger/go/internal/dagger"
 	"fmt"
+	"path/filepath"
+	"strings"
 )
 
-type Go struct{}
+type Go struct {
+	ctr *dagger.Container
+}
 
+// GoVersion constraints which Go version can be used.
 type GoVersion string
 
 const (
-// GoVersion1_24_3 GoVersion = "1.24.3"
+	GoVersion1_25_6 GoVersion = "v1_25_6"
+	GoVersion1_24_3 GoVersion = "v1_24_3"
+	GoVersion1_23_8 GoVersion = "v1_23_8"
 )
 
-func goImageName(version string) string {
-	return fmt.Sprintf("golang:%s", version)
+func goImageName(version GoVersion) string {
+	// we remove the initial v
+	version = version[1:]
+	// we replace the _ by . so it will actually match
+	// a docker image version instead of pleasing graphql limited enum
+	// format.
+	v := strings.Replace(string(version), "_", ".", -1)
+	return fmt.Sprintf("golang:%s", v)
 }
 
-func (g *Go) Container(version string) *dagger.Container {
+// Container gives a Go container based on the docker image "golang"
+// with the given version as the tag.
+func (g *Go) Container(
+	// version of the "golang" image (eg, "v1_24_3")
+	version GoVersion,
+) *dagger.Container {
+	if g.ctr != nil {
+		return g.ctr
+	}
+
 	goCache := dag.CacheVolume("gobuildcache")
 	goModCache := dag.CacheVolume("gomodcache")
 
 	imageName := goImageName(version)
 
-	return dag.Container().
+	g.ctr = dag.Container().
 		From(imageName).
 		WithMountedCache("/root/.cache/go-build", goCache).
 		WithMountedCache("/go/pkg/mod", goModCache)
+
+	return g.ctr
+}
+
+// Test tests the container
+func (g *Go) Test(
+	ctx context.Context,
+
+	source *dagger.Directory,
+) bool {
+	dirName, err := source.Name(ctx)
+	if err != nil {
+		return false
+	}
+
+	testPath := filepath.Join("/usr/src", dirName)
+
+	exitCode, err := g.ctr.
+		WithDirectory(testPath, source).
+		WithWorkdir(testPath).
+		WithExec([]string{"go", "test"}).
+		ExitCode(ctx)
+	if err != nil {
+		return false
+	}
+
+	if exitCode != 0 {
+		return false
+	}
+	return true
 }
