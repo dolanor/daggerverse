@@ -63,9 +63,10 @@ func (f *Fyne) BuildAPK(
 
 	tags string,
 ) *dagger.File {
-	apk := dag.Go().Container("1.25.6").
+	apk := dag.Go().Container("1.24.6").
 		With(dag.Android().WithAndroid).
 		With(f.WithFyne).
+	        With(dag.Go().Container("1.25.6").
 		WithDirectory("/src", source).
 		WithWorkdir("/src").
 		//Terminal().
