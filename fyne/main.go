@@ -22,6 +22,7 @@ type Fyne struct{}
 
 func (f *Fyne) WithFyne(ctr *dagger.Container) *dagger.Container {
 	return ctr.
+		WithExec([]string{"apt-get", "update"}).
 		// fyne deps
 		WithExec([]string{"apt-get", "install", "-y", "gcc", "libgl1-mesa-dev", "xorg-dev", "libxkbcommon-dev"}).
 		// TODO: use the new tools repository for v2.6+
