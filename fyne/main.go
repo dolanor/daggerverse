@@ -66,7 +66,7 @@ func (f *Fyne) BuildAPK(
 	apk := dag.Go().Container("1.24.6").
 		With(dag.Android().WithAndroid).
 		With(f.WithFyne).
-	        With(dag.Go().Container("1.25.6").
+		With(dag.Go().Container("1.25.6")).
 		WithDirectory("/src", source).
 		WithWorkdir("/src").
 		//Terminal().
