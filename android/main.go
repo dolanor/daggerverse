@@ -33,10 +33,9 @@ func (a *Android) WithAndroid(ctr *dagger.Container) *dagger.Container {
 		WithMountedCache("/var/cache/apt/archives", aptArchives).
 
 		// android sdk deps
-		WithEnvVariable("DAGGERCACHE", "busted").
 		WithExec([]string{"dpkg", "--add-architecture", "i386"}).
 		WithExec([]string{"apt-get", "update"}).
-		WithExec([]string{"apt-get", "install", "-y", "libc6:i386", "libncurses5:i386", "libstdc++6:i386", "lib32z1", "libbz2-1.0:i386"}).
+		WithExec([]string{"apt-get", "install", "-y", "libc6:i386", "libncurses6:i386", "libstdc++6:i386", "lib32z1", "libbz2-1.0:i386"}).
 		WithWorkdir("/tmp/").
 		// WithExec([]string{"curl", "-O", "-L", "https://dl.google.com/android/repository/android-ndk-r27c-linux.zip"}).
 		// WithExec([]string{"apt-get", "install", "-y", "unzip"}).
