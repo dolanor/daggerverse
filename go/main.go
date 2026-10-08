@@ -37,8 +37,13 @@ func (g *Go) Container(version string) *dagger.Container {
 
 	imageName := goImageName(version)
 
+	aptArchives := dag.CacheVolume("aptarchives")
+
 	return dag.Container().
 		From(imageName).
 		WithMountedCache("/root/.cache/go-build", goCache).
-		WithMountedCache("/go/pkg/mod", goModCache)
+		WithMountedCache("/go/pkg/mod", goModCache).
+		WithMountedCache("/var/cache/apt/archives", aptArchives).
+		WithExec([]string{"apt-get", "update"}).
+		WithExec([]string{"apt-get", "install", "-y", "git-lfs"})
 }
