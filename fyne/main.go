@@ -27,8 +27,9 @@ func (f *Fyne) WithFyne(ctr *dagger.Container) *dagger.Container {
 		WithExec([]string{"apt-get", "install", "-y", "gcc", "libgl1-mesa-dev", "xorg-dev", "libxkbcommon-dev"}).
 		// TODO: use the new tools repository for v2.6+
 		WithExec([]string{"echo", "bust cache"}).
-		WithExec([]string{"git", "clone", "https://github.com/dolanor/fyne", "/src/fyne"}).
-		WithWorkdir("/src/fyne").
+		WithExec([]string{"mkdir", "/tools"}).
+		WithExec([]string{"git", "clone", "https://github.com/dolanor/fyne", "/tools/fyne"}).
+		WithWorkdir("/tools/fyne").
 		WithExec([]string{"git", "checkout", "location"}).
 		WithExec([]string{"go", "install", "./cmd/fyne"})
 }
