@@ -1,7 +1,8 @@
 {
   "name": "android",
-  "engineVersion": "v0.18.7",
+  "engineVersion": "v0.20.1",
   "sdk": {
     "source": "go"
-  }
+  },
+  "disableDefaultFunctionCaching": true
 }
