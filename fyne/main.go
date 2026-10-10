@@ -77,7 +77,11 @@ func (f *Fyne) BuildAPK(
 		With(withGo12514).
 		WithDirectory("/src", source).
 		WithWorkdir("/src").
+		WithExec([]string{"git", "status"}).
+		WithExec([]string{"git", "diff"}).
 		WithExec([]string{"git", "lfs", "checkout"}).
+		WithExec([]string{"git", "status"}).
+		WithExec([]string{"git", "diff"}).
 		//Terminal().
 		WithExec([]string{
 			"fyne",
